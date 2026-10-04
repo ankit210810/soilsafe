@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<rect width="1280" height="720" fill="#071310"/><g fill="none" stroke="#173126" stroke-width="1" opacity=".7">
+<path d="M40 90H1240M40 170H1240M40 250H1240M40 330H1240M40 410H1240M40 490H1240M40 570H1240"/>
+<path d="M100 40V620M220 40V620M340 40V620M460 40V620M580 40V620M700 40V620M820 40V620M940 40V620M1060 40V620M1180 40V620"/></g>
+<text x="82" y="120" fill="#bfff4a" font-family="Arial" font-size="24" font-weight="700">SOILSAFE ANIMATED EXPLAINER</text>
+<text x="82" y="205" fill="#f4f7ef" font-family="Arial" font-size="68" font-weight="700">PROTECT THE SOIL.</text>
+<circle cx="1040" cy="200" r="92" fill="#173d2c" stroke="#5f8d55" stroke-width="3"/><path d="M1000 155q35-28 72 0l-22 25-32-5zM1030 205l30-20 28 25-33 30z" fill="#75a95d" opacity=".8"/>
+<rect x="82" y="470" width="1116" height="105" rx="18" fill="#10251c" stroke="#4f744b"/>
+<text x="120" y="515" fill="#bfff4a" font-family="Arial" font-size="20" font-weight="700">OBSERVE</text><text x="335" y="515" fill="#dce8d9" font-family="Arial" font-size="20">→</text><text x="385" y="515" fill="#bfff4a" font-family="Arial" font-size="20" font-weight="700">RECORD</text><text x="610" y="515" fill="#dce8d9" font-family="Arial" font-size="20">→</text><text x="660" y="515" fill="#bfff4a" font-family="Arial" font-size="20" font-weight="700">REVIEW</text><text x="875" y="515" fill="#dce8d9" font-family="Arial" font-size="20">→</text><text x="925" y="515" fill="#bfff4a" font-family="Arial" font-size="20" font-weight="700">PROTECT</text>
+<text x="82" y="650" fill="#aebaae" font-family="Arial" font-size="22">A visible change is an observation — not a diagnosis.</text>
+</svg>

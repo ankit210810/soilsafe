@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#071310">
+  <title>SoilSafe | Protect the Soil</title>
+  <meta name="description" content="SoilSafe combines soil-pollution awareness, chemistry learning, responsible observation reporting and research evidence in one CHE 110 CA1 website.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+<link rel="icon" href="assets/soilsafe-logo.png">
+</head>
+<body>
+<div class="site-shell">
+
+<header class="topbar">
+  <a class="nav-brand" href="#home"><img src="assets/soilsafe-logo.png" alt="SoilSafe"><span class="brand-name">Soil<span>Safe</span></span></a>
+  <nav class="nav-links" id="nav">
+    <a href="#home">Home</a><a href="#learn">Learn</a><a href="#research">Research</a><a href="#analytics">Analytics</a>
+    <a href="#video">Watch</a><a href="#records">Records</a><a href="#track">Track</a><a href="#report">Report</a><a href="#community">Community</a><a href="#admin" id="adminNav" class="hidden">Admin</a><a href="#solutions">Solutions</a>
+  </nav>
+  <div class="nav-user"><button type="button" class="notification-btn hidden" id="notificationBtn" title="Notifications">🔔 <span id="notificationCount">0</span></button><button type="button" class="user-name login-visible" id="loginBtn">Login</button><button class="logout-btn" id="logoutBtn">Logout</button></div>
+  <button type="button" class="mobile-notify hidden" id="mobileNotifyBtn">🔔</button><button type="button" class="mobile-login" id="mobileLoginBtn">Login</button><button type="button" class="menu-btn" id="menuBtn" aria-label="Toggle navigation">☰</button>
+</header>
+
+<main>
+<section class="hero hero-v2" id="home">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <div class="hero-eyebrow"><span class="live-dot"></span> CHE 110 · CA1 PROJECT</div>
+      <h1>PROTECT<br>THE <em>SOIL.</em></h1>
+      <p>Healthy soil is more than ground beneath our feet. It is a living system that supports food, water, biodiversity, and our future.</p>
+      <div class="hero-actions"><a class="lime-btn" href="#learn">Explore the science <span>↘</span></a><a class="hero-text-link" href="#report">Create a digital record <span>→</span></a></div>
+      <div class="hero-proof"><span class="proof-icons"><i>♟</i><i>✎</i><i>◉</i></span><span><b>Observe. Understand. Protect.</b><small>Awareness backed by credible research</small></span></div>
+    </div>
+    <div class="hero-visual">
+      <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+      <div class="globe"><span class="continent c1"></span><span class="continent c2"></span><span class="continent c3"></span></div>
+      <div class="hero-float ph-float"><small>CHEMISTRY SNAPSHOT</small><b>pH 6–7.5</b><span>A common range for many plants</span></div>
+      <div class="hero-float soil-float"><small>SOIL HEALTH</small><b>Starts<br>below.</b><div class="tiny-bars"><i></i><i></i><i></i><i></i></div></div>
+      <div class="hero-soil"><div class="grass"></div><div class="soil-root r-a"></div><div class="soil-root r-b"></div><div class="soil-root r-c"></div><span>SOIL · LIFE · FUTURE</span></div>
+      <div class="hero-caption">A living world beneath the surface <b>01 / 04</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="ticker"><div>SOIL IS LIFE <b>✳</b> KNOW YOUR GROUND <b>✳</b> SCIENCE BEFORE ASSUMPTIONS <b>✳</b> LESS WASTE, HEALTHIER LAND <b>✳</b> SOIL IS LIFE</div></section>
+
+<section class="section" id="learn">
+  <div class="section-head"><div><div class="kicker">01 / UNDERSTAND THE ISSUE</div><h2>What happens when the ground <em>absorbs our waste?</em></h2><p>Soil pollution can occur when harmful substances accumulate at levels that may affect soil quality, organisms, ecosystems or human health.</p></div></div>
+  <div class="learning-grid">
+    <div class="layer-card">
+      <div class="card-title"><div><small>INTERACTIVE FIELD GUIDE</small><h3>Soil is a layered system.</h3></div><span class="tiny-pill">TAP A LAYER</span></div>
+      <div class="soil-cross-section">
+        <div class="layer-buttons">
+          <button class="soil-select selected" data-layer="top"><span>01</span><b>Topsoil</b><small>Organic matter & roots</small><i>+</i></button>
+          <button class="soil-select" data-layer="sub"><span>02</span><b>Subsoil</b><small>Minerals & water movement</small><i>+</i></button>
+          <button class="soil-select" data-layer="parent"><span>03</span><b>Parent material</b><small>Weathered rock & minerals</small><i>+</i></button>
+        </div>
+        <div class="soil-art"><div class="sun-disc"></div><div class="plant-stem"></div><div class="leaf leaf-one"></div><div class="leaf leaf-two"></div><div class="root r1"></div><div class="root r2"></div><div class="root r3"></div><div class="band b1"></div><div class="band b2"></div><div class="band b3"></div><span>UNDER THE SURFACE</span></div>
+      </div>
+      <div class="layer-description" id="layerDescription"><b>01 — TOPSOIL</b><p>Often rich in organic matter and biological activity. Pollution can affect soil organisms and plant growth depending on the contaminant and exposure.</p></div>
+    </div>
+    <div class="pathways-card">
+      <small class="kicker">POLLUTION PATHWAYS</small><h3>A possible source is a starting point — <em>not proof.</em></h3>
+      <div class="path-list">
+        <article><span>01</span><div><b>Industrial activity</b><p>Waste, spills or emissions can introduce metals and other chemicals.</p></div></article>
+        <article><span>02</span><div><b>Agricultural inputs</b><p>Excessive or inappropriate pesticide and fertiliser use can affect soil.</p></div></article>
+        <article><span>03</span><div><b>Waste & dumping</b><p>Unmanaged waste, e-waste, oils and leaking storage can introduce pollutants.</p></div></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pathway-section" id="pathways">
+  <div class="pathway-inner">
+    <div class="pathway-head"><div><div class="kicker">02 / TRACE THE PATHWAY</div><h2>Pollution has a <em>source.</em><br>Follow the evidence.</h2></div><p>Recognising a possible source is the first step—not proof that a site is contaminated.</p></div>
+    <div class="pathway-cards">
+      <article class="pathway-card"><div class="pathway-art industry-art"><span class="smoke s1"></span><span class="smoke s2"></span><span class="factory f1"></span><span class="factory f2"></span><i>!</i></div><small>01 / INDUSTRY</small><h3>Industrial activity</h3><p>Some industrial processes can release metals and other chemicals through waste, spills, or emissions.</p><b>POTENTIAL SOURCE</b></article>
+      <article class="pathway-card"><div class="pathway-art agri-art"><span class="sun-mini"></span><span class="stem st1"></span><span class="stem st2"></span><span class="stem st3"></span><span class="leaf-mini l1"></span><span class="leaf-mini l2"></span><span class="leaf-mini l3"></span><span class="leaf-mini l4"></span><span class="leaf-mini l5"></span></div><small>02 / AGRICULTURE</small><h3>Chemical inputs</h3><p>Excessive or inappropriate use of pesticides and fertilisers may contribute to soil contamination.</p><b>USE RESPONSIBLY</b></article>
+      <article class="pathway-card"><div class="pathway-art waste-art"><span class="waste w1"></span><span class="waste w2"></span><span class="waste-ball"></span><span class="waste-leaf"></span></div><small>03 / WASTE</small><h3>Waste &amp; dumping</h3><p>Unmanaged waste, e-waste, oils, and leaking storage can introduce pollutants into the environment.</p><b>PREVENT LEAKAGE</b></article>
+    </div>
+  </div>
+</section>
+
+<section class="chemistry-section">
+  <div class="section chemistry-grid">
+    <div><div class="kicker">03 / THE CHEMISTRY</div><h2>Soil science is <em>chemistry in action.</em></h2><p>Soil conditions influence how substances behave. Their movement and availability depend on more than their presence alone.</p>
+      <div class="chem-points"><div><span>01</span><p><b>pH</b><small>Can change the solubility and mobility of some metals.</small></p></div><div><span>02</span><p><b>Organic matter</b><small>Can bind some substances and change their availability.</small></p></div><div><span>03</span><p><b>Concentration & exposure</b><small>Help determine potential risk and the need for assessment.</small></p></div></div>
+    </div>
+    <div class="ph-card"><div class="ph-top"><span>SOIL pH EXPLORER</span><span class="live-pill">INTERACTIVE</span></div><div class="ph-value"><strong id="phValue">7.0</strong><span id="phLabel">NEAR NEUTRAL</span></div><input type="range" id="phSlider" min="3" max="10" step=".1" value="7" aria-label="Adjust soil pH"><div class="ph-scale"><span>3 ACIDIC</span><span>7 NEUTRAL</span><span>10 ALKALINE</span></div><div class="ph-spectrum"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ph-insight" id="phInsight"><span>✳</span><p><b>Near neutral</b><small>Many plants grow well in slightly acidic to neutral soil, but ideal pH varies by species and soil conditions.</small></p></div><div class="ph-disclaimer">Educational illustration only. pH alone cannot determine whether soil is polluted.</div></div>
+  </div>
+</section>
+
+<section class="section" id="research">
+  <div class="section-head"><div><div class="kicker">03 / FACTS WITH CONTEXT</div><h2>Numbers matter. <em>Sources matter more.</em></h2><p>Research figures are shown with their geography and reporting period so they are not mistaken for a measurement of all polluted land.</p></div></div>
+  <div class="impact-grid">
+    <div class="impact-card"><strong>75<span>%</span></strong><p>Increase in global pesticide use from 2000 to 2017.</p><small>FAO & UNEP · 2021</small></div>
+    <div class="impact-card"><strong>109<span> Mt</span></strong><p>Synthetic nitrogen fertilisers applied globally in 2018.</p><small>FAO & UNEP · 2021</small></div>
+    <div class="impact-card"><strong>103</strong><p>Confirmed contaminated sites reported in India.</p><small>CPCB · UPDATED MARCH 2025</small></div>
+    <div class="impact-card"><strong>93</strong><p>Probable contaminated sites reported in India.</p><small>CPCB · UPDATED MARCH 2025</small></div>
+  </div>
+  <div class="india-panel"><div class="india-orb">INDIA<span>●</span></div><div><small class="kicker">INDIA / CPCB STATUS SNAPSHOT</small><h3>196 sites listed as confirmed or probable.</h3><p>The CPCB report updated in March 2025 listed 103 confirmed and 93 probable contaminated sites, with remediation underway at 7 sites. These are reported site counts—not a measure of all polluted land in India.</p><a class="text-arrow" href="https://cpcb.gov.in/uploads/hwmd/Brief_Contmainated_sites_in_india.pdf" target="_blank" rel="noreferrer">Read CPCB report ↗</a></div><div class="india-total"><span>REPORTED TOTAL</span><strong>196</strong><small>sites · March 2025</small></div></div>
+</section>
+
+<section class="section analytics-section" id="analytics">
+  <div class="section-head"><div><div class="kicker">04 / MY ACTIVITY</div><h2>Your SoilSafe <em>dashboard.</em></h2><p>Live browser-only analytics from observations submitted through this unified website.</p></div></div>
+  <div class="impact-grid analytics-stats">
+    <div class="impact-card"><strong id="statReports">0</strong><span>reports submitted</span></div><div class="impact-card"><strong id="statToday">0</strong><span>reported today</span></div><div class="impact-card"><strong id="statPhoto">0</strong><span>with photo evidence</span></div><div class="impact-card"><strong id="statReview">0</strong><span>requiring review</span></div>
+  </div>
+  <div class="analytics-grid">
+    <div class="chart-card"><div class="chart-head"><b>Reports by category</b><span>LIVE</span></div><div id="categoryChart" class="category-chart"><div class="empty-chart">No observations yet.</div></div></div>
+    <div class="chart-card"><div class="chart-head"><b>Last 7 days</b><span>ACTIVITY</span></div><div id="activityChart" class="activity-chart"></div></div>
+  </div>
+  <div class="tool-row"><button class="outline-dark" id="exportJson">Export JSON</button><button class="outline-dark" id="exportCsv">Export CSV</button><button class="outline-dark" id="printReport">Print report</button></div>
+</section>
+
+<section class="section video-section" id="video">
+  <div class="section-head"><div><div class="kicker">04 / WATCH THE STORY</div><h2>From pollution risk to <em>responsible action.</em></h2><p>A short animated explainer showing how SoilSafe connects observation, recording, review and protection.</p></div><div class="report-status"><span></span> 18-second explainer</div></div>
+  <div class="video-frame"><video controls playsinline preload="metadata" poster="assets/soilsafe-video-poster.svg"><source src="assets/videos/soilsafe-awareness.mp4" type="video/mp4">Your browser does not support the video element.</video><div class="video-caption"><span>SOILSAFE ANIMATED EXPLAINER</span><b>Observe → Record → Review → Protect</b></div></div>
+</section>
+
+<section class="report-section" id="report">
+  <div class="section report-inner">
+    <div class="section-head"><div><div class="kicker">06 / COMMUNITY OBSERVATIONS</div><h2>Notice something? <em>Record it responsibly.</em></h2><p>Anyone can report a soil-related observation. Choose whether you are an LPU student or reporting from another place. SoilSafe organises observations for awareness and follow-up; it does not test soil or confirm contamination.</p></div><div class="report-status"><span></span> Open to everyone</div></div>
+    <div class="report-layout">
+      <form class="form-card" id="reportForm">
+        <div class="form-title"><div><small>NEW REPORT</small><h3>Problem details</h3></div><b>01 → 04</b></div>
+        <div class="two-col"><label>Reporter name / ID <small>optional</small><input id="reporter" type="text" placeholder="Your name or Anonymous"></label><label>Where are you reporting from?<select id="reporterType" required><option value="lpu_student">I am an LPU student</option><option value="other_place">I am from another place</option></select></label></div><label>Location of the observation<input id="location" type="text" placeholder="e.g. Near a market, farm, campus, road, or village" required></label>
+        <div class="two-col"><label>Problem category<select id="category"><option>Solid waste / plastic</option><option>Oil / chemical spill</option><option>Construction / debris</option><option>Wastewater / sewage</option><option>Agricultural / chemical use</option><option>Unusual soil appearance</option><option>Other soil-related concern</option></select></label><label>Date noticed<input id="date" type="date"></label></div>
+        <label>Evidence level<select id="evidenceLevel"><option value="visual">Visual observation only</option><option value="investigation">Further investigation required</option><option value="laboratory">Laboratory confirmed (documented)</option></select></label>
+        <label>What did you observe?<textarea id="description" rows="5" placeholder="Describe only what you actually observed. Avoid guessing the chemical or cause." required></textarea></label>
+        <label class="photo-drop" for="photo"><span class="photo-icon">＋</span><span><b>Add photo evidence</b><small>JPG, PNG or WEBP · maximum 2.5 MB</small></span><input id="photo" type="file" accept="image/jpeg,image/png,image/webp"></label>
+        <div id="photoPreview" class="photo-preview"></div>
+        <div class="science-warning"><b>Scientific limitation:</b> a photograph documents an observation. It cannot identify a pollutant or confirm soil contamination. Further investigation or laboratory testing may be required.</div>
+        <button class="lime-btn full-btn" type="submit">Submit report <span>→</span></button><div id="formMessage" class="form-message"></div>
+      </form>
+      <aside class="side-stack"><div class="side-card dark-card"><small>AFTER YOU SUBMIT</small><h3>Your report gets a clear next step.</h3><div class="response-line"><span>01</span><p>Observation saved</p></div><div class="response-line"><span>02</span><p>Suggested response generated</p></div><div class="response-line"><span>03</span><p>Review may be recommended</p></div></div><div class="side-card"><small>RESPONSIBLE REPORTING</small><ul><li>Do not upload faces or private documents.</li><li>Do not identify a person as responsible without evidence.</li><li>Do not touch or spread suspected hazardous material.</li><li>For serious hazards, contact the appropriate campus authority.</li></ul></div></aside>
+    </div>
+  </div>
+</section>
+
+<section class="section records-section" id="records">
+  <div class="section-head community-head"><div><div class="kicker">05 / RECORDS</div><h2>See how a real observation <em>is documented.</em></h2><p>Records keep the language factual: what was seen, where it was seen and what level of follow-up is appropriate. The examples below are illustrative; live personal records appear after login.</p></div><a class="outline-dark" href="#report">Create a record →</a></div>
+  <div class="record-summary" id="myRecordSummary"><div><strong id="myRecordCount">0</strong><span>My online records</span></div><div><strong id="myReviewCount">0</strong><span>Awaiting review</span></div><div><strong id="myResponseCount">0</strong><span>Responses received</span></div><button class="lime-btn" id="recordsLoginBtn">Login to view yours <span>→</span></button></div>
+  <div class="records-grid" id="exampleRecordsGrid"></div>
+  <div class="my-records" id="myRecordsPanel"></div>
+</section>
+
+<section class="section track-section" id="track">
+  <div class="section-head community-head"><div><div class="kicker">06 / TRACK A PROBLEM</div><h2>Find your report by <em>Problem Number.</em></h2><p>Every live report receives a unique SoilSafe number such as <b>SS-2026-000127</b>. Sign in to see the report details and its current review status.</p></div></div>
+  <div class="track-card">
+    <div class="track-search"><label>Problem Number<input id="trackProblemNumber" type="text" placeholder="e.g. SS-2026-000127" autocomplete="off"></label><button class="lime-btn" id="trackSearchBtn">Track report <span>→</span></button></div>
+    <div id="trackMessage" class="form-message"></div>
+    <div id="trackResult" class="track-result"></div>
+  </div>
+</section>
+
+
+<section class="section" id="community">
+  <div class="section-head community-head"><div><div class="kicker">07 / COMMUNITY REPORTS</div><h2>Problems people have <em>documented.</em></h2><p>Review observations and the cautious first response suggested by SoilSafe. Reports are open to everyone — LPU students and people from other places.</p></div><select id="filter"><option value="all">All reports</option><option value="new">New</option><option value="review">Under review</option><option value="responded">Response suggested</option><option value="confirmed">Resolved</option></select></div>
+  <div id="reportsGrid" class="reports-grid"></div>
+</section>
+
+<section class="section">
+  <div class="section-head"><div><div class="kicker">08 / EVIDENCE LEVELS</div><h2>Observation is not the same as <em>confirmation.</em></h2></div></div>
+  <div class="evidence-grid"><div><span>LEVEL 01</span><h3>Visual observation</h3><p>Photo, location and description of what is visible.</p></div><div><span>LEVEL 02</span><h3>Further investigation</h3><p>Site inspection, sampling or expert review may be appropriate.</p></div><div><span>LEVEL 03</span><h3>Laboratory confirmed</h3><p>Contaminants and concentrations require appropriate testing.</p></div></div>
+</section>
+
+<section class="section" id="solutions">
+  <div class="section-head"><div><div class="kicker">09 / SMALL ACTIONS, REAL IMPACT</div><h2>Protect the ground <em>we depend on.</em></h2><p>Prevention starts with informed choices, safe handling and responsible reporting.</p></div></div>
+  <div class="solution-grid"><article><span>01</span><div class="solution-icon">♻</div><h3>Handle waste safely</h3><p>Separate waste, use approved disposal routes and never dump oils, batteries or chemicals onto land.</p></article><article><span>02</span><div class="solution-icon">⌁</div><h3>Use inputs responsibly</h3><p>Follow product labels and expert guidance for fertilisers and pesticides; avoid excessive or improper use.</p></article><article><span>03</span><div class="solution-icon">⌕</div><h3>Report, don’t assume</h3><p>Document visible concerns safely. Potential contamination needs appropriate investigation and may need lab testing.</p></article><article><span>04</span><div class="solution-icon">✳</div><h3>Build awareness</h3><p>Share credible information, cite sources and encourage communities to protect soil and water together.</p></article></div>
+</section>
+
+<section class="truth-band"><div class="truth-mark">i</div><div><span>AN IMPORTANT DISTINCTION</span><h3>A photograph can document an observation. It cannot identify an unknown chemical.</h3><p>SoilSafe is an educational awareness and record-keeping prototype—not a pollution detector, laboratory service or environmental certification.</p></div></section>
+
+<section class="section references">
+  <div class="section-head"><div><div class="kicker">10 / RESEARCH & REFERENCES</div><h2>Curiosity needs <em>credible sources.</em></h2><p>Figures and scientific explanations are grounded in published environmental evidence.</p></div></div>
+  <div class="reference-list">
+    <a href="https://doi.org/10.4060/cb4894en" target="_blank" rel="noreferrer"><span>01</span><div><b>Global Assessment of Soil Pollution</b><small>FAO & UNEP · 2021</small></div><strong>↗</strong></a>
+    <a href="https://cpcb.gov.in/uploads/hwmd/Brief_Contmainated_sites_in_india.pdf" target="_blank" rel="noreferrer"><span>02</span><div><b>Status of Contaminated Sites in India</b><small>Central Pollution Control Board · Updated March 2025</small></div><strong>↗</strong></a>
+    <a href="https://moef.gov.in/rules-regulations-3" target="_blank" rel="noreferrer"><span>03</span><div><b>Rules & regulations</b><small>Ministry of Environment, Forest and Climate Change</small></div><strong>↗</strong></a>
+    <a href="https://onlinelibrary.wiley.com/doi/10.5402/2011/402647" target="_blank" rel="noreferrer"><span>04</span><div><b>Heavy Metals in Contaminated Soils</b><small>Wuana & Okieimen · 2011</small></div><strong>↗</strong></a>
+    <a href="https://pubmed.ncbi.nlm.nih.gov/33668829/" target="_blank" rel="noreferrer"><span>05</span><div><b>Heavy Metals and Pesticides Toxicity</b><small>Review article · 2021</small></div><strong>↗</strong></a>
+  </div>
+</section>
+
+<section class="section footer-note"><div class="lpu-note"><div class="lpu-mark">LPU</div><div><b>CHE 110 · CA1 PROJECT</b><span>Lovely Professional University</span></div></div><p>*Research figures refer to their stated geography/reporting period. SoilSafe is an awareness and observation-recording prototype; it does not test soil, identify chemicals from photos or replace professional environmental assessment.</p></section>
+</main>
+
+<footer><div>© 2026 SoilSafe · Learn. Observe. Record. Respond.</div><div>Built for CHE 110 · Lovely Professional University</div></footer>
+</div>
+
+<div class="notification-popover" id="notificationPopover">
+  <div class="notification-head"><div><small>SOILSAFE</small><h3>Notifications</h3></div><button type="button" id="markNotificationsRead">Mark all read</button></div>
+  <div id="notificationList" class="notification-list"><div class="notification-empty">Login to receive report updates here.</div></div>
+</div>
+
+<div class="modal" id="loginModal"><div class="modal-backdrop" data-close></div><div class="login-card"><button class="close-modal" data-close>×</button><img src="assets/soilsafe-logo.png" alt="SoilSafe logo"><small>SOILSAFE ACCOUNT</small><h2>Welcome back.</h2><p>Sign in to submit observations, keep your records and follow review updates from any device.</p><input id="loginEmail" type="email" placeholder="Email address"><input id="loginPassword" type="password" placeholder="Password"><div class="login-actions"><button type="button" class="lime-btn" id="loginSubmit">Continue <span>→</span></button></div><button type="button" class="login-secondary" id="signupSubmit">Create a new account</button><div id="loginMessage" class="form-message"></div></div></div>
+
+<div class="modal" id="profileModal"><div class="modal-backdrop" data-profile-close></div><div class="profile-card"><button class="close-modal" data-profile-close>×</button><div class="profile-top"><div class="profile-avatar" id="profileAvatar">S</div><div><small>SOILSAFE ACCOUNT</small><h2 id="profileHeading">My profile</h2><p id="profileEmail"></p></div></div><div class="profile-stats" id="profileStats"></div><div class="profile-grid"><label>Full name<input id="profileName" type="text" placeholder="Your full name"></label><label>City / Place<input id="profileCity" type="text" placeholder="City or place"></label><label>About / Bio<textarea id="profileBio" rows="3" placeholder="Tell the SoilSafe community a little about yourself"></textarea></label><label>Account type<select id="profileAffiliation"><option value="lpu_student">I am an LPU student</option><option value="other_place">I am from another place</option></select></label></div><div class="profile-actions"><button type="button" class="lime-btn" id="saveProfile">Save profile →</button><button type="button" class="outline-dark" id="closeProfile">Close</button></div><div id="profileMessage" class="form-message"></div></div></div>
+
+<section class="admin-section hidden" id="admin"><div class="section admin-inner"><div class="section-head"><div><div class="kicker">ADMIN / REVIEW QUEUE</div><h2>Review community <em>reports.</em></h2><p>Only your authenticated SoilSafe admin account can update a report. Every update is stored online, creates a notification for the reporter and appears on the Track page.</p></div><button class="outline-dark" id="refreshAdmin">Refresh</button></div><div id="adminStats" class="impact-grid"></div><div id="adminReports" class="admin-reports"></div></div></section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="script.js"></script>
