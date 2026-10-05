@@ -123,41 +123,36 @@ starRating?.querySelectorAll("button").forEach(button => {
 });
 
 async function loadRatingSummary() {
-  if (!supabase) return;
+  const ratingAverage = document.getElementById("ratingAverage");
+  const ratingTotal = document.getElementById("ratingTotal");
+  const ratingStarsDisplay = document.getElementById("ratingStarsDisplay");
 
-  const { data, error } = await supabase
-    .from("website_ratings")
-    .select("rating");
+  if (!ratingAverage || !ratingTotal || !ratingStarsDisplay) return;
+
+  const { data, error } = await supabase.rpc(
+    "get_website_rating_summary"
+  );
 
   if (error) {
-    console.error("Could not load ratings:", error);
+    console.error("Rating summary error:", error);
     return;
   }
 
-  const ratings = data || [];
-  const total = ratings.length;
+  const row = data?.[0];
 
-  const average =
-    total > 0
-      ? ratings.reduce((sum, item) => sum + item.rating, 0) / total
-      : 0;
+  const average = Number(row?.average_rating ?? 0);
+  const total = Number(row?.total_ratings ?? 0);
 
-  if (ratingAverage) {
-    ratingAverage.textContent = average.toFixed(1);
-  }
+  ratingAverage.textContent = average.toFixed(1);
+  ratingTotal.textContent = total;
 
-  if (ratingTotal) {
-    ratingTotal.textContent = total;
-  }
+  const rounded = Math.round(average);
 
-  if (ratingStarsDisplay) {
-    const rounded = Math.round(average);
-
-    ratingStarsDisplay.textContent =
-      "★".repeat(rounded) +
-      "☆".repeat(5 - rounded);
-  }
+  ratingStarsDisplay.textContent =
+    "★ ".repeat(rounded) +
+    "☆ ".repeat(5 - rounded);
 }
+  
 
 async function loadMyRating() {
   if (!supabase) return;
