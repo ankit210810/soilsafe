@@ -58,3 +58,197 @@
 /* Restored account/profile experience */
 .profile-card{width:min(720px,calc(100vw - 32px));max-height:90vh;overflow:auto;background:#f7f7ef;border:1px solid rgba(0,0,0,.12);border-radius:24px;padding:30px;position:relative;box-shadow:0 30px 100px rgba(0,0,0,.35)}
 .profile-top{display:flex;gap:18px;align-items:center;padding-right:30px}.profile-top small{letter-spacing:.16em;font-weight:800}.profile-top h2{margin:5px 0;font-size:32px}.profile-top p{margin:0;color:#5f675f}.profile-avatar{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:#c9ef3a;color:#10170e;font-size:30px;font-weight:800}.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:24px 0}.profile-stat{background:#fff;border:1px solid #dde2d9;border-radius:14px;padding:14px}.profile-stat b{display:block;font-size:24px}.profile-stat span{font-size:12px;color:#687067;text-transform:uppercase;letter-spacing:.08em}.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.profile-grid label:last-child{grid-column:1/-1}.profile-grid label{font-weight:700;font-size:13px}.profile-grid input,.profile-grid textarea,.profile-grid select{display:block;width:100%;margin-top:7px;border:1px solid #cbd2c8;border-radius:12px;padding:12px;background:#fff;font:inherit}.profile-actions{display:flex;gap:10px;margin-top:18px}.profile-card .outline-dark{border:1px solid #222;background:transparent;border-radius:999px;padding:12px 18px;font-weight:700}.profile-card .close-modal{position:absolute;right:18px;top:15px}.profile-card .form-message{margin-top:12px}.account-menu-open{overflow:hidden}@media(max-width:650px){.profile-card{padding:22px}.profile-grid{grid-template-columns:1fr}.profile-grid label:last-child{grid-column:auto}.profile-stats{grid-template-columns:1fr 1fr 1fr}.profile-top h2{font-size:25px}.profile-avatar{width:58px;height:58px;font-size:24px}}
+/* ================================
+   SOILSAFE PREMIUM STAR RATING
+   ================================ */
+
+.rating-section {
+  position: relative;
+}
+
+.rating-card {
+  display: grid;
+  grid-template-columns: 1.35fr .65fr;
+  gap: 18px;
+  background: #fff;
+  border: 1px solid #dfe8df;
+  border-radius: 22px;
+  padding: 28px;
+  box-shadow: 0 18px 55px rgba(35,59,42,.06);
+}
+
+.rating-main,
+.rating-summary {
+  border-radius: 17px;
+  padding: 24px;
+}
+
+.rating-main {
+  background: #f7faf5;
+  border: 1px solid #e3ebe1;
+}
+
+.rating-summary {
+  background: #0a1916;
+  color: #eef4ef;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.rating-main > small,
+.rating-summary > small {
+  font: 800 9px Space Grotesk, sans-serif;
+  letter-spacing: .15em;
+  color: #7b8a81;
+}
+
+.rating-summary > small {
+  color: #8fa198;
+}
+
+.rating-main h3 {
+  font: 800 25px Manrope, sans-serif;
+  margin: 8px 0 4px;
+}
+
+/* Stars */
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 20px 0 8px;
+}
+
+.star-rating button {
+  appearance: none;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  padding: 2px;
+  margin: 0;
+
+  color: #cbd3ca;
+  font-size: 42px;
+  line-height: 1;
+  cursor: pointer;
+
+  transition:
+    color .18s ease,
+    transform .18s ease,
+    text-shadow .18s ease;
+}
+
+.star-rating button:hover {
+  color: #f4c542;
+  transform: translateY(-5px) scale(1.12);
+  text-shadow: 0 7px 20px rgba(244,197,66,.38);
+}
+
+.star-rating button.selected {
+  color: #f4c542;
+  text-shadow: 0 5px 18px rgba(244,197,66,.32);
+}
+
+.star-rating button:focus-visible {
+  border-radius: 8px;
+  box-shadow: 0 0 0 3px rgba(199,239,53,.35);
+}
+
+/* Rating text */
+
+.rating-label {
+  min-height: 22px;
+  margin-bottom: 17px;
+  color: #718078;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Feedback box */
+
+#ratingFeedback {
+  width: 100%;
+  border: 1px solid #dce6dc;
+  background: #fff;
+  border-radius: 12px;
+  padding: 13px;
+  resize: vertical;
+  font: inherit;
+  font-size: 12px;
+  color: #314038;
+  outline: none;
+}
+
+#ratingFeedback:focus {
+  border-color: #b8d66b;
+  box-shadow: 0 0 0 3px rgba(199,239,53,.12);
+}
+
+/* Community score */
+
+.rating-average {
+  margin-top: 17px;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.rating-average strong {
+  font: 800 58px/1 Manrope, sans-serif;
+  color: #c7ef35;
+  letter-spacing: -.05em;
+}
+
+.rating-average span {
+  color: #8fa198;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.rating-stars-display {
+  margin: 14px 0 10px;
+  color: #f4c542;
+  font-size: 23px;
+  letter-spacing: 3px;
+  white-space: nowrap;
+}
+
+.rating-summary p {
+  margin: 0;
+  color: #8fa198;
+  font-size: 10px;
+}
+
+.rating-summary p b {
+  color: #eef4ef;
+}
+
+/* Mobile */
+
+@media(max-width:700px) {
+  .rating-card {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .rating-main,
+  .rating-summary {
+    padding: 20px;
+  }
+
+  .star-rating {
+    gap: 3px;
+  }
+
+  .star-rating button {
+    font-size: 36px;
+  }
+
+  .rating-average strong {
+    font-size: 50px;
+  }
+}
