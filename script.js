@@ -119,19 +119,31 @@ function renderTrackResult(r){
           : ""
       }
 
-      <div class="track-actions">
+     <div class="track-actions">
 
+  <button
+    type="button"
+    class="btn btn-primary"
+    onclick="openReportEditor('${esc(r.id)}')"
+  >
+    Update Report
+  </button>
+
+  ${
+    user && r.user_id === user.id
+      ? `
         <button
           type="button"
-          class="btn btn-primary"
-          onclick="openReportEditor('${esc(r.id)}')"
+          class="btn btn-danger"
+          onclick="deleteOwnReport('${esc(r.id)}')"
         >
-          Update Report
+          Delete Report
         </button>
+      `
+      : ""
+  }
 
-      </div>
-
-    </div>
+</div>
 
     <div
       id="reportEditPanel"
@@ -572,6 +584,95 @@ document
 
 window.openReportEditor = openReportEditor;
 window.closeReportEditor = closeReportEditor;
+    async function deleteOwnReport(reportId){
+
+  if(!supabase || !user){
+    alert("Please login to delete your report.");
+    return;
+  }
+
+  const report = records.find(
+    r => r.id === reportId
+  );
+
+  if(!report){
+    alert("Report not found.");
+    return;
+  }
+
+  // Frontend ownership check
+  if(report.user_id !== user.id){
+    alert("You can only delete your own reports.");
+    return;
+  }
+
+  const confirmed = confirm(
+    `Delete ${report.problemNumber} permanently?\n\n` +
+    `This action cannot be undone.`
+  );
+
+  if(!confirmed){
+    return;
+  }
+
+  try{
+
+    const { error } = await supabase
+      .from("reports")
+      .delete()
+      .eq("id", reportId)
+      .eq("user_id", user.id);
+
+    if(error){
+      console.error(
+        "Delete own report error:",
+        error
+      );
+
+      alert(
+        "Could not delete the report: " +
+        error.message
+      );
+
+      return;
+    }
+
+    // Remove it from the local records immediately
+    records = records.filter(
+      r => r.id !== reportId
+    );
+
+    // Clear the currently displayed report
+    renderTrackResult(null);
+
+    // Refresh the rest of the website
+    await loadReports();
+
+    renderAll();
+
+    const message =
+      document.getElementById("trackMessage");
+
+    if(message){
+      message.textContent =
+        "Your report was deleted successfully.";
+    }
+
+  }catch(err){
+
+    console.error(
+      "Delete own report error:",
+      err
+    );
+
+    alert(
+      "Something went wrong while deleting the report."
+    );
+
+  }
+}
+
+window.deleteOwnReport = deleteOwnReport;
 window.saveReportUpdate = saveReportUpdate;
 window.deleteAdminReport = deleteAdminReport;
 /* mobile navigation */
