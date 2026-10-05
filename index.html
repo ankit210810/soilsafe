@@ -165,6 +165,71 @@
   <div id="reportsGrid" class="reports-grid"></div>
 </section>
 
+  
+<!-- SoilSafe Rating -->
+<section class="section rating-section" id="rating">
+  <div class="section-head community-head">
+    <div>
+      <div class="kicker">08 / YOUR EXPERIENCE</div>
+      <h2>How would you rate <em>SoilSafe?</em></h2>
+      <p>
+        Your feedback helps us improve the SoilSafe awareness and reporting
+        experience.
+      </p>
+    </div>
+  </div>
+
+  <div class="rating-card">
+    <div class="rating-main">
+      <small>RATE SOILSAFE</small>
+      <h3>Share your experience</h3>
+
+      <div class="star-rating" id="starRating" aria-label="Rate SoilSafe from 1 to 5 stars">
+        <button type="button" data-rating="1" aria-label="1 star">★</button>
+        <button type="button" data-rating="2" aria-label="2 stars">★</button>
+        <button type="button" data-rating="3" aria-label="3 stars">★</button>
+        <button type="button" data-rating="4" aria-label="4 stars">★</button>
+        <button type="button" data-rating="5" aria-label="5 stars">★</button>
+      </div>
+
+      <div id="ratingLabel" class="rating-label">
+        Select a rating
+      </div>
+
+      <textarea
+        id="ratingFeedback"
+        rows="4"
+        maxlength="500"
+        placeholder="Optional: tell us what you liked or what we could improve..."
+      ></textarea>
+
+      <button type="button" class="lime-btn" id="submitRating">
+        Submit rating <span>→</span>
+      </button>
+
+      <div id="ratingMessage" class="form-message"></div>
+    </div>
+
+    <div class="rating-summary">
+      <small>COMMUNITY RATING</small>
+
+      <div class="rating-average">
+        <strong id="ratingAverage">0.0</strong>
+        <span> / 5</span>
+      </div>
+
+      <div class="rating-stars-display" id="ratingStarsDisplay">
+        ☆ ☆ ☆ ☆ ☆
+      </div>
+
+      <p>
+        Based on <b id="ratingTotal">0</b> ratings
+      </p>
+    </div>
+  </div>
+</section>
+
+  
 <section class="section">
   <div class="section-head"><div><div class="kicker">08 / EVIDENCE LEVELS</div><h2>Observation is not the same as <em>confirmation.</em></h2></div></div>
   <div class="evidence-grid"><div><span>LEVEL 01</span><h3>Visual observation</h3><p>Photo, location and description of what is visible.</p></div><div><span>LEVEL 02</span><h3>Further investigation</h3><p>Site inspection, sampling or expert review may be appropriate.</p></div><div><span>LEVEL 03</span><h3>Laboratory confirmed</h3><p>Contaminants and concentrations require appropriate testing.</p></div></div>
