@@ -56,7 +56,25 @@ document.getElementById("recordsLoginBtn").addEventListener("click",()=>{if(user
 function renderTrackResult(r){const box=document.getElementById("trackResult");if(!box)return;if(!r){box.innerHTML="";return}box.innerHTML=`<div class="track-result-card"><div class="track-result-top"><div><small>SOILSAFE PROBLEM NUMBER</small><strong>${esc(r.problemNumber)}</strong></div><span class="badge">${esc(r.statusLabel)}</span></div><div class="track-grid"><div><small>REPORT</small><b>${esc(r.category)}</b><span>${esc(r.description)}</span></div><div><small>LOCATION</small><b>${esc(r.location)}</b><span>Noticed ${esc(r.date)}</span></div></div><div class="track-response"><small>SOILSAFE RESPONSE</small><p>${esc(r.adminMessage||r.solution||"Your report is waiting for review.")}</p></div>${r.photo?`<a class="track-photo-link" href="${esc(r.photo)}" target="_blank" rel="noreferrer">View evidence photo ↗</a>`:""}</div>`;}
 async function trackReport(){const input=document.getElementById("trackProblemNumber"),msg=document.getElementById("trackMessage");if(!user){msg.textContent="Please login first so SoilSafe can securely show your own report.";openLogin();return}const pn=input.value.trim().toUpperCase();if(!pn){msg.textContent="Enter your Problem Number, for example SS-2026-000127.";renderTrackResult(null);return}msg.textContent="Searching your online records…";const local=records.find(r=>r.problemNumber.toUpperCase()===pn);if(local){msg.textContent="Report found.";renderTrackResult(local);return}const {data,error}=await supabase.from("reports").select("*").eq("problem_number",pn).maybeSingle();if(error){msg.textContent="Could not search right now: "+error.message;return}if(!data){msg.textContent="No report with that Problem Number was found in your account.";renderTrackResult(null);return}const r=normalize(data);msg.textContent="Report found.";renderTrackResult(r);}
 document.getElementById("trackSearchBtn")?.addEventListener("click",trackReport);document.getElementById("trackProblemNumber")?.addEventListener("keydown",e=>{if(e.key==="Enter")trackReport();});
+/* mobile navigation */
+const menuBtn = document.getElementById("menuBtn");
+const nav = document.getElementById("nav");
 
+menuBtn?.addEventListener("click", () => {
+  nav?.classList.toggle("mobile-open");
+
+  menuBtn?.setAttribute(
+    "aria-expanded",
+    nav?.classList.contains("mobile-open") ? "true" : "false"
+  );
+});
+
+nav?.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => {
+    nav?.classList.remove("mobile-open");
+    menuBtn?.setAttribute("aria-expanded", "false");
+  });
+});
 /* notifications */
 function renderNotifications(){const list=document.getElementById("notificationList");if(!list)return;if(!user){list.innerHTML='<div class="notification-empty">Login to receive report updates here.</div>';return}if(!notifications.length){list.innerHTML='<div class="notification-empty">No notifications yet. Your report updates will appear here.</div>';return}list.innerHTML=notifications.map(n=>`<button type="button" class="notification-item ${n.read_at?"read":"unread"}" data-notification="${esc(n.id)}"><span class="notification-dot"></span><span><b>${esc(n.title)}</b><small>${esc(n.message)}</small><em>${new Date(n.created_at).toLocaleString()}</em></span></button>`).join("");document.querySelectorAll("[data-notification]").forEach(btn=>btn.addEventListener("click",()=>markNotificationRead(btn.dataset.notification)));updateAuthUI();}
 async function markNotificationRead(id){if(!supabase||!user)return;await supabase.from("notifications").update({read_at:new Date().toISOString()}).eq("id",id).eq("user_id",user.id);const n=notifications.find(x=>x.id===id);if(n)n.read_at=new Date().toISOString();renderNotifications();}
