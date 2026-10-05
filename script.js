@@ -837,22 +837,24 @@ async function openAdminNotification(notificationId, reportId){
 
   await markNotificationRead(notificationId);
 
-  /*
-    Only admins should jump to the admin report.
-    Normal user notifications simply become read.
-  */
   if(!reportId) return;
 
-  const isAdmin =
-    typeof currentProfile !== "undefined" &&
-    currentProfile?.role === "admin";
-
+  // Only admin should jump to the admin report
   if(!isAdmin) return;
 
+  // Make sure the admin section is visible
+  const adminSection = document.getElementById("admin");
+
+  if(adminSection){
+    adminSection.classList.remove("hidden");
+  }
+
+  // Re-render admin reports
   if(typeof renderAdmin === "function"){
     renderAdmin();
   }
 
+  // Wait for the report cards to be created
   setTimeout(() => {
 
     const reportElement =
@@ -873,11 +875,15 @@ async function openAdminNotification(notificationId, reportId){
         reportElement.classList.remove("notification-highlight");
       }, 2500);
 
+    }else{
+      console.warn(
+        "SoilSafe: report element not found:",
+        reportId
+      );
     }
 
-  }, 300);
+  }, 500);
 }
-
 
 async function markNotificationRead(id){
   if(!supabase || !user) return;
