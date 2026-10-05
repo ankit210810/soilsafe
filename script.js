@@ -362,7 +362,109 @@ document.getElementById("notificationBtn")?.addEventListener("click",toggleNotif
 
 /* admin */
 function renderAdmin(){if(!isAdmin)return;const counts={new:0,review:0,responded:0,confirmed:0};records.forEach(r=>counts[r.status]=(counts[r.status]||0)+1);document.getElementById("adminStats").innerHTML=[['NEW',counts.new],['UNDER REVIEW',counts.review],['RESPONSE SUGGESTED',counts.responded],['RESOLVED',counts.confirmed]].map(x=>`<div class="impact-card"><strong>${x[1]}</strong><span>${x[0]}</span></div>`).join("");document.getElementById("adminReports").innerHTML=records.length?records.map(r=>`<article class="admin-report"><div class="admin-report-head"><div><span class="badge">${esc(r.statusLabel)}</span><div class="admin-problem-number">${esc(r.problemNumber)}</div><h3>${esc(r.category)}</h3><small>${esc(r.location)} · ${esc(r.date)} · ${r.reporterType==="lpu_student"?"LPU student":"Another place"} · ${esc(r.reporter)}</small></div>${r.photo?`<a href="${esc(r.photo)}" target="_blank" rel="noreferrer">View photo ↗</a>`:""}</div><p>${esc(r.description)}</p><div class="admin-edit"><label>Status<select data-status="${esc(r.id)}"><option value="new" ${r.status==='new'?'selected':''}>New</option><option value="review" ${r.status==='review'?'selected':''}>Under review</option><option value="responded" ${r.status==='responded'?'selected':''}>Response suggested</option><option value="confirmed" ${r.status==='confirmed'?'selected':''}>Resolved</option></select></label><label>Message to reporter<textarea data-message="${esc(r.id)}" rows="3" placeholder="Write the message the reporter should receive">${esc(r.adminMessage)}</textarea></label><label>Suggested solution<textarea data-solution="${esc(r.id)}" rows="3">${esc(r.solution)}</textarea></label><button class="lime-btn save-admin" data-save="${esc(r.id)}">Save update & notify user →</button></div><div class="admin-result" id="admin-result-${esc(r.id)}"></div></article>`).join(""):'<div class="empty">No online reports yet.</div>';document.querySelectorAll(".save-admin").forEach(btn=>btn.addEventListener("click",()=>updateAdminReport(btn.dataset.save)));  const adminReports = document.getElementById("adminReports");  if (adminReports && !document.getElementById("adminRatings")) {   adminReports.insertAdjacentHTML("beforeend", `     <section class="admin-ratings-section" id="adminRatings">       <div class="admin-rating-loading">         Loading user ratings and feedback…       </div>     </section>   `); }  loadAdminRatings(); }
-async function updateAdminReport(id){const btn=document.querySelector(`[data-save="${CSS.escape(id)}"]`),status=document.querySelector(`[data-status="${CSS.escape(id)}"]`).value,solution=document.querySelector(`[data-solution="${CSS.escape(id)}"]`).value.trim(),adminMessage=document.querySelector(`[data-message="${CSS.escape(id)}"]`).value.trim(),out=document.getElementById("admin-result-"+id);btn.disabled=true;out.textContent="Saving update and sending notification…";try{const {data,error}=await supabase.rpc("admin_update_report",{p_report_id:id,p_status:status,p_solution:solution,p_admin_message:adminMessage});if(error)throw error;const i=records.findIndex(r=>r.id===id);if(i>=0)records[i]=normalize(data);out.textContent=`Updated ${records[i]?.problemNumber||"report"}. The reporter has a new SoilSafe notification.`;await loadNotifications();renderAll();}catch(err){out.textContent="Update failed: "+(err.message||"unknown error");}finally{btn.disabled=false;}}
+async function updateAdminReport(id){
+  const btn = document.querySelector(
+    `[data-save="${CSS.escape(id)}"]`
+  );
+
+  const status = document.querySelector(
+    `[data-status="${CSS.escape(id)}"]`
+  ).value;
+
+  const solution = document.querySelector(
+    `[data-solution="${CSS.escape(id)}"]`
+  ).value.trim();
+
+  const adminMessage = document.querySelector(
+    `[data-message="${CSS.escape(id)}"]`
+  ).value.trim();
+
+  const out = document.getElementById(
+    "admin-result-" + id
+  );
+
+  btn.disabled = true;
+  out.textContent = "Saving update and sending notification…";
+
+  try {
+
+    /* 1. Update the report + create in-app notification */
+    const { data, error } = await supabase.rpc(
+      "admin_update_report",
+      {
+        p_report_id: id,
+        p_status: status,
+        p_solution: solution,
+        p_admin_message: adminMessage
+      }
+    );
+
+    if (error) throw error;
+
+    const i = records.findIndex(
+      r => r.id === id
+    );
+
+    if (i >= 0) {
+      records[i] = normalize(data);
+    }
+
+    /* 2. Send email notification */
+    const {
+      data: emailResult,
+      error: emailError
+    } = await supabase.functions.invoke(
+      "send-report-email",
+      {
+        body: {
+          report_id: id
+        }
+      }
+    );
+
+    if (emailError) {
+      console.error(
+        "Email notification error:",
+        emailError
+      );
+
+      out.textContent =
+        `Report updated successfully, but the email could not be sent. ` +
+        `The user still has the in-app notification.`;
+    } else {
+      console.log(
+        "SoilSafe email sent:",
+        emailResult
+      );
+
+      out.textContent =
+        `Updated ${
+          records[i]?.problemNumber || "report"
+        }. The reporter has been notified by email and in SoilSafe.`;
+    }
+
+    /* 3. Refresh notifications and UI */
+    await loadNotifications();
+
+    renderAll();
+
+  } catch (err) {
+
+    console.error(
+      "Admin report update error:",
+      err
+    );
+
+    out.textContent =
+      "Update failed: " +
+      (err.message || "unknown error");
+
+  } finally {
+
+    btn.disabled = false;
+
+  }
+}
 document.getElementById("refreshAdmin").addEventListener("click",async()=>{await loadReports();renderAll();});
 
 /* export */
