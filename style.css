@@ -390,3 +390,19 @@
     font-size: 17px;
   }
 }
+.btn-danger{
+  border:1px solid rgba(190,70,70,.35);
+  background:#fff4f4;
+  color:#b33b3b;
+  border-radius:999px;
+  padding:11px 18px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.btn-danger:hover{
+  background:#ffe5e5;
+  border-color:#b33b3b;
+  transform:translateY(-1px);
+}
