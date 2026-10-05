@@ -272,8 +272,96 @@ async function markAllNotificationsRead(){if(!supabase||!user)return;await supab
 function toggleNotifications(){const pop=document.getElementById("notificationPopover");if(!pop)return;pop.classList.toggle("open");if(pop.classList.contains("open"))loadNotifications();}
 document.getElementById("notificationBtn")?.addEventListener("click",toggleNotifications);document.getElementById("mobileNotifyBtn")?.addEventListener("click",toggleNotifications);document.getElementById("markNotificationsRead")?.addEventListener("click",markAllNotificationsRead);document.addEventListener("click",e=>{const pop=document.getElementById("notificationPopover");if(pop?.classList.contains("open")&&!pop.contains(e.target)&&!e.target.closest("#notificationBtn")&&!e.target.closest("#mobileNotifyBtn"))pop.classList.remove("open");});
 
+  async function loadAdminRatings() {
+  const box = document.getElementById("adminRatings");
+  if (!box || !isAdmin || !supabase) return;
+
+  box.innerHTML = `
+    <div class="admin-rating-loading">
+      Loading user ratings and feedback…
+    </div>
+  `;
+
+  const { data, error } = await supabase
+    .from("website_ratings")
+    .select("id,user_id,rating,feedback,created_at,updated_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Admin ratings error:", error);
+    box.innerHTML = `
+      <div class="empty">
+        Could not load ratings: ${esc(error.message)}
+      </div>
+    `;
+    return;
+  }
+
+  const ratings = data || [];
+
+  if (!ratings.length) {
+    box.innerHTML = `
+      <div class="empty">
+        No user ratings have been submitted yet.
+      </div>
+    `;
+    return;
+  }
+
+  const average =
+    ratings.reduce((sum, r) => sum + Number(r.rating || 0), 0) /
+    ratings.length;
+
+  box.innerHTML = `
+    <div class="admin-rating-head">
+      <div>
+        <small>USER FEEDBACK</small>
+        <h2>SoilSafe ratings</h2>
+        <p>
+          ${ratings.length} rating${ratings.length === 1 ? "" : "s"}
+          · Average ${average.toFixed(1)} / 5
+        </p>
+      </div>
+
+      <div class="admin-rating-average">
+        <strong>${average.toFixed(1)}</strong>
+        <span>★</span>
+      </div>
+    </div>
+
+    <div class="admin-rating-list">
+      ${ratings.map(r => `
+        <article class="admin-rating-item">
+          <div class="admin-rating-top">
+            <div class="admin-rating-stars">
+              ${"★".repeat(Number(r.rating))}
+              <span>${"☆".repeat(5 - Number(r.rating))}</span>
+            </div>
+
+            <small>
+              ${new Date(r.created_at).toLocaleDateString()}
+            </small>
+          </div>
+
+          <div class="admin-rating-score">
+            ${Number(r.rating)} / 5
+          </div>
+
+          <p>
+            ${
+              r.feedback
+                ? esc(r.feedback)
+                : "<em>No written feedback provided.</em>"
+            }
+          </p>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
 /* admin */
-function renderAdmin(){if(!isAdmin)return;const counts={new:0,review:0,responded:0,confirmed:0};records.forEach(r=>counts[r.status]=(counts[r.status]||0)+1);document.getElementById("adminStats").innerHTML=[['NEW',counts.new],['UNDER REVIEW',counts.review],['RESPONSE SUGGESTED',counts.responded],['RESOLVED',counts.confirmed]].map(x=>`<div class="impact-card"><strong>${x[1]}</strong><span>${x[0]}</span></div>`).join("");document.getElementById("adminReports").innerHTML=records.length?records.map(r=>`<article class="admin-report"><div class="admin-report-head"><div><span class="badge">${esc(r.statusLabel)}</span><div class="admin-problem-number">${esc(r.problemNumber)}</div><h3>${esc(r.category)}</h3><small>${esc(r.location)} · ${esc(r.date)} · ${r.reporterType==="lpu_student"?"LPU student":"Another place"} · ${esc(r.reporter)}</small></div>${r.photo?`<a href="${esc(r.photo)}" target="_blank" rel="noreferrer">View photo ↗</a>`:""}</div><p>${esc(r.description)}</p><div class="admin-edit"><label>Status<select data-status="${esc(r.id)}"><option value="new" ${r.status==='new'?'selected':''}>New</option><option value="review" ${r.status==='review'?'selected':''}>Under review</option><option value="responded" ${r.status==='responded'?'selected':''}>Response suggested</option><option value="confirmed" ${r.status==='confirmed'?'selected':''}>Resolved</option></select></label><label>Message to reporter<textarea data-message="${esc(r.id)}" rows="3" placeholder="Write the message the reporter should receive">${esc(r.adminMessage)}</textarea></label><label>Suggested solution<textarea data-solution="${esc(r.id)}" rows="3">${esc(r.solution)}</textarea></label><button class="lime-btn save-admin" data-save="${esc(r.id)}">Save update & notify user →</button></div><div class="admin-result" id="admin-result-${esc(r.id)}"></div></article>`).join(""):'<div class="empty">No online reports yet.</div>';document.querySelectorAll(".save-admin").forEach(btn=>btn.addEventListener("click",()=>updateAdminReport(btn.dataset.save)));}
+function renderAdmin(){if(!isAdmin)return;const counts={new:0,review:0,responded:0,confirmed:0};records.forEach(r=>counts[r.status]=(counts[r.status]||0)+1);document.getElementById("adminStats").innerHTML=[['NEW',counts.new],['UNDER REVIEW',counts.review],['RESPONSE SUGGESTED',counts.responded],['RESOLVED',counts.confirmed]].map(x=>`<div class="impact-card"><strong>${x[1]}</strong><span>${x[0]}</span></div>`).join("");document.getElementById("adminReports").innerHTML=records.length?records.map(r=>`<article class="admin-report"><div class="admin-report-head"><div><span class="badge">${esc(r.statusLabel)}</span><div class="admin-problem-number">${esc(r.problemNumber)}</div><h3>${esc(r.category)}</h3><small>${esc(r.location)} · ${esc(r.date)} · ${r.reporterType==="lpu_student"?"LPU student":"Another place"} · ${esc(r.reporter)}</small></div>${r.photo?`<a href="${esc(r.photo)}" target="_blank" rel="noreferrer">View photo ↗</a>`:""}</div><p>${esc(r.description)}</p><div class="admin-edit"><label>Status<select data-status="${esc(r.id)}"><option value="new" ${r.status==='new'?'selected':''}>New</option><option value="review" ${r.status==='review'?'selected':''}>Under review</option><option value="responded" ${r.status==='responded'?'selected':''}>Response suggested</option><option value="confirmed" ${r.status==='confirmed'?'selected':''}>Resolved</option></select></label><label>Message to reporter<textarea data-message="${esc(r.id)}" rows="3" placeholder="Write the message the reporter should receive">${esc(r.adminMessage)}</textarea></label><label>Suggested solution<textarea data-solution="${esc(r.id)}" rows="3">${esc(r.solution)}</textarea></label><button class="lime-btn save-admin" data-save="${esc(r.id)}">Save update & notify user →</button></div><div class="admin-result" id="admin-result-${esc(r.id)}"></div></article>`).join(""):'<div class="empty">No online reports yet.</div>';document.querySelectorAll(".save-admin").forEach(btn=>btn.addEventListener("click",()=>updateAdminReport(btn.dataset.save)));  const adminReports = document.getElementById("adminReports");  if (adminReports && !document.getElementById("adminRatings")) {   adminReports.insertAdjacentHTML("beforeend", `     <section class="admin-ratings-section" id="adminRatings">       <div class="admin-rating-loading">         Loading user ratings and feedback…       </div>     </section>   `); }  loadAdminRatings(); }
 async function updateAdminReport(id){const btn=document.querySelector(`[data-save="${CSS.escape(id)}"]`),status=document.querySelector(`[data-status="${CSS.escape(id)}"]`).value,solution=document.querySelector(`[data-solution="${CSS.escape(id)}"]`).value.trim(),adminMessage=document.querySelector(`[data-message="${CSS.escape(id)}"]`).value.trim(),out=document.getElementById("admin-result-"+id);btn.disabled=true;out.textContent="Saving update and sending notification…";try{const {data,error}=await supabase.rpc("admin_update_report",{p_report_id:id,p_status:status,p_solution:solution,p_admin_message:adminMessage});if(error)throw error;const i=records.findIndex(r=>r.id===id);if(i>=0)records[i]=normalize(data);out.textContent=`Updated ${records[i]?.problemNumber||"report"}. The reporter has a new SoilSafe notification.`;await loadNotifications();renderAll();}catch(err){out.textContent="Update failed: "+(err.message||"unknown error");}finally{btn.disabled=false;}}
 document.getElementById("refreshAdmin").addEventListener("click",async()=>{await loadReports();renderAll();});
 
