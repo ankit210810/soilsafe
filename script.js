@@ -569,6 +569,10 @@ document
 
     }
   );
+
+window.openReportEditor = openReportEditor;
+window.closeReportEditor = closeReportEditor;
+window.saveReportUpdate = saveReportUpdate;
 /* mobile navigation */
 const menuBtn = document.getElementById("menuBtn");
 const nav = document.getElementById("nav");
