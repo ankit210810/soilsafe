@@ -53,9 +53,522 @@ document.getElementById("filter").addEventListener("change",renderCommunity);
 document.getElementById("recordsLoginBtn").addEventListener("click",()=>{if(user)document.getElementById("report").scrollIntoView({behavior:"smooth"});else document.getElementById("loginModal").classList.add("open");});
 
 /* tracking */
-function renderTrackResult(r){const box=document.getElementById("trackResult");if(!box)return;if(!r){box.innerHTML="";return}box.innerHTML=`<div class="track-result-card"><div class="track-result-top"><div><small>SOILSAFE PROBLEM NUMBER</small><strong>${esc(r.problemNumber)}</strong></div><span class="badge">${esc(r.statusLabel)}</span></div><div class="track-grid"><div><small>REPORT</small><b>${esc(r.category)}</b><span>${esc(r.description)}</span></div><div><small>LOCATION</small><b>${esc(r.location)}</b><span>Noticed ${esc(r.date)}</span></div></div><div class="track-response"><small>SOILSAFE RESPONSE</small><p>${esc(r.adminMessage||r.solution||"Your report is waiting for review.")}</p></div>${r.photo?`<a class="track-photo-link" href="${esc(r.photo)}" target="_blank" rel="noreferrer">View evidence photo ↗</a>`:""}</div>`;}
-async function trackReport(){const input=document.getElementById("trackProblemNumber"),msg=document.getElementById("trackMessage");if(!user){msg.textContent="Please login first so SoilSafe can securely show your own report.";openLogin();return}const pn=input.value.trim().toUpperCase();if(!pn){msg.textContent="Enter your Problem Number, for example SS-2026-000127.";renderTrackResult(null);return}msg.textContent="Searching your online records…";const local=records.find(r=>r.problemNumber.toUpperCase()===pn);if(local){msg.textContent="Report found.";renderTrackResult(local);return}const {data,error}=await supabase.from("reports").select("*").eq("problem_number",pn).maybeSingle();if(error){msg.textContent="Could not search right now: "+error.message;return}if(!data){msg.textContent="No report with that Problem Number was found in your account.";renderTrackResult(null);return}const r=normalize(data);msg.textContent="Report found.";renderTrackResult(r);}
-document.getElementById("trackSearchBtn")?.addEventListener("click",trackReport);document.getElementById("trackProblemNumber")?.addEventListener("keydown",e=>{if(e.key==="Enter")trackReport();});
+
+function renderTrackResult(r){
+  const box = document.getElementById("trackResult");
+
+  if(!box) return;
+
+  if(!r){
+    box.innerHTML = "";
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="track-result-card">
+
+      <div class="track-result-top">
+        <div>
+          <small>SOILSAFE PROBLEM NUMBER</small>
+          <strong>${esc(r.problemNumber)}</strong>
+        </div>
+
+        <span class="badge">${esc(r.statusLabel)}</span>
+      </div>
+
+      <div class="track-grid">
+
+        <div>
+          <small>REPORT</small>
+          <b>${esc(r.category)}</b>
+          <span>${esc(r.description)}</span>
+        </div>
+
+        <div>
+          <small>LOCATION</small>
+          <b>${esc(r.location)}</b>
+          <span>Noticed ${esc(r.date)}</span>
+        </div>
+
+      </div>
+
+      <div class="track-response">
+        <small>SOILSAFE RESPONSE</small>
+
+        <p>
+          ${esc(
+            r.adminMessage ||
+            r.solution ||
+            "Your report is waiting for review."
+          )}
+        </p>
+      </div>
+
+      ${
+        r.photo
+          ? `
+            <a
+              class="track-photo-link"
+              href="${esc(r.photo)}"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View evidence photo ↗
+            </a>
+          `
+          : ""
+      }
+
+      <div class="track-actions">
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="openReportEditor('${esc(r.id)}')"
+        >
+          Update Report
+        </button>
+
+      </div>
+
+    </div>
+
+    <div
+      id="reportEditPanel"
+      class="report-edit-panel"
+      hidden
+    ></div>
+  `;
+}
+
+
+function openReportEditor(reportId){
+
+  const panel = document.getElementById("reportEditPanel");
+
+  if(!panel) return;
+
+  const report = records.find(r => r.id === reportId);
+
+  if(!report){
+
+    panel.hidden = false;
+
+    panel.innerHTML = `
+      <div class="notice error">
+        Report details could not be loaded.
+      </div>
+    `;
+
+    return;
+  }
+
+  panel.hidden = false;
+
+  panel.innerHTML = `
+    <div class="report-edit-card">
+
+      <div class="report-edit-header">
+
+        <div>
+          <small>UPDATE REPORT</small>
+          <h3>${esc(report.problemNumber)}</h3>
+        </div>
+
+        <button
+          type="button"
+          class="edit-close"
+          onclick="closeReportEditor()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <label>
+        Location
+
+        <input
+          id="editReportLocation"
+          type="text"
+          value="${esc(report.location || "")}"
+        >
+      </label>
+
+
+      <label>
+        Category
+
+        <select id="editReportCategory">
+
+          <option value="Plastic & Waste">
+            Plastic & Waste
+          </option>
+
+          <option value="Chemical Contamination">
+            Chemical Contamination
+          </option>
+
+          <option value="Industrial Pollution">
+            Industrial Pollution
+          </option>
+
+          <option value="Agricultural Pollution">
+            Agricultural Pollution
+          </option>
+
+          <option value="Water / Soil Contamination">
+            Water / Soil Contamination
+          </option>
+
+          <option value="Other">
+            Other
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+        Date noticed
+
+        <input
+          id="editReportDate"
+          type="date"
+          value="${esc(report.date || "")}"
+        >
+      </label>
+
+
+      <label>
+        Description
+
+        <textarea
+          id="editReportDescription"
+          rows="5"
+        >${esc(report.description || "")}</textarea>
+
+      </label>
+
+
+      <div class="report-edit-actions">
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="saveReportUpdate('${esc(report.id)}')"
+        >
+          Save Changes
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          onclick="closeReportEditor()"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+
+      <p
+        id="reportEditMessage"
+        class="form-message"
+      ></p>
+
+    </div>
+  `;
+
+
+  const categorySelect =
+    document.getElementById("editReportCategory");
+
+  if(categorySelect){
+
+    categorySelect.value =
+      report.category || "";
+
+  }
+}
+
+
+function closeReportEditor(){
+
+  const panel =
+    document.getElementById("reportEditPanel");
+
+  if(panel){
+
+    panel.hidden = true;
+    panel.innerHTML = "";
+
+  }
+}
+
+
+async function saveReportUpdate(reportId){
+
+  const message =
+    document.getElementById("reportEditMessage");
+
+  const location =
+    document
+      .getElementById("editReportLocation")
+      ?.value
+      .trim();
+
+  const category =
+    document
+      .getElementById("editReportCategory")
+      ?.value
+      .trim();
+
+  const dateNoticed =
+    document
+      .getElementById("editReportDate")
+      ?.value;
+
+  const description =
+    document
+      .getElementById("editReportDescription")
+      ?.value
+      .trim();
+
+
+  if(
+    !location ||
+    !category ||
+    !dateNoticed ||
+    !description
+  ){
+
+    if(message){
+
+      message.textContent =
+        "Please complete all fields before saving.";
+
+    }
+
+    return;
+  }
+
+
+  if(message){
+
+    message.textContent =
+      "Saving your report update…";
+
+  }
+
+
+  const { data, error } =
+    await supabase.rpc(
+      "update_own_report",
+      {
+        p_report_id: reportId,
+        p_location: location,
+        p_category: category,
+        p_date_noticed: dateNoticed,
+        p_description: description
+      }
+    );
+
+
+  if(error){
+
+    console.error(
+      "Report update error:",
+      error
+    );
+
+    if(message){
+
+      message.textContent =
+        "Could not update the report: " +
+        error.message;
+
+    }
+
+    return;
+  }
+
+
+  const updated =
+    normalize(data);
+
+
+  const index =
+    records.findIndex(
+      r => r.id === reportId
+    );
+
+
+  if(index !== -1){
+
+    records[index] = {
+      ...records[index],
+      ...updated
+    };
+
+  }
+
+
+  if(message){
+
+    message.textContent =
+      "Report updated successfully.";
+
+  }
+
+
+  const refreshed =
+    records.find(
+      r => r.id === reportId
+    );
+
+
+  if(refreshed){
+
+    renderTrackResult(refreshed);
+
+  }
+
+}
+
+
+async function trackReport(){
+
+  const input =
+    document.getElementById(
+      "trackProblemNumber"
+    );
+
+  const msg =
+    document.getElementById(
+      "trackMessage"
+    );
+
+
+  if(!user){
+
+    msg.textContent =
+      "Please login first so SoilSafe can securely show your own report.";
+
+    openLogin();
+
+    return;
+  }
+
+
+  const pn =
+    input.value
+      .trim()
+      .toUpperCase();
+
+
+  if(!pn){
+
+    msg.textContent =
+      "Enter your Problem Number, for example SS-2026-000127.";
+
+    renderTrackResult(null);
+
+    return;
+  }
+
+
+  msg.textContent =
+    "Searching your online records…";
+
+
+  const local =
+    records.find(
+      r =>
+        r.problemNumber &&
+        r.problemNumber.toUpperCase() === pn
+    );
+
+
+  if(local){
+
+    msg.textContent =
+      "Report found.";
+
+    renderTrackResult(local);
+
+    return;
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await supabase
+      .from("reports")
+      .select("*")
+      .eq("problem_number", pn)
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+
+  if(error){
+
+    msg.textContent =
+      "Could not search right now: " +
+      error.message;
+
+    return;
+  }
+
+
+  if(!data){
+
+    msg.textContent =
+      "No report with that Problem Number was found in your account.";
+
+    renderTrackResult(null);
+
+    return;
+  }
+
+
+  const r =
+    normalize(data);
+
+
+  msg.textContent =
+    "Report found.";
+
+  renderTrackResult(r);
+
+}
+
+
+document
+  .getElementById("trackSearchBtn")
+  ?.addEventListener(
+    "click",
+    trackReport
+  );
+
+
+document
+  .getElementById("trackProblemNumber")
+  ?.addEventListener(
+    "keydown",
+    e => {
+
+      if(e.key === "Enter"){
+
+        trackReport();
+
+      }
+
+    }
+  );
 /* mobile navigation */
 const menuBtn = document.getElementById("menuBtn");
 const nav = document.getElementById("nav");
