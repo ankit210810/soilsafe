@@ -252,3 +252,141 @@
     font-size: 50px;
   }
 }
+/* ================================
+   ADMIN RATINGS & FEEDBACK
+   ================================ */
+
+.admin-ratings-section {
+  margin-top: 28px;
+  background: #fff;
+  border: 1px solid #dfe8df;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 14px 40px rgba(35,59,42,.06);
+}
+
+.admin-rating-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.admin-rating-head small {
+  font: 800 9px Space Grotesk, sans-serif;
+  letter-spacing: .15em;
+  color: #7b8a81;
+}
+
+.admin-rating-head h2 {
+  margin: 6px 0 4px;
+  font: 800 24px Manrope, sans-serif;
+}
+
+.admin-rating-head p {
+  margin: 0;
+  color: #718078;
+  font-size: 12px;
+}
+
+.admin-rating-average {
+  min-width: 100px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #0a1916;
+  text-align: center;
+}
+
+.admin-rating-average strong {
+  color: #c7ef35;
+  font: 800 32px Manrope, sans-serif;
+}
+
+.admin-rating-average span {
+  color: #f4c542;
+  font-size: 22px;
+}
+
+.admin-rating-list {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-rating-item {
+  position: relative;
+  padding: 18px;
+  border: 1px solid #e2e9e1;
+  border-radius: 14px;
+  background: #f8faf7;
+}
+
+.admin-rating-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-rating-stars {
+  color: #f4c542;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.admin-rating-stars span {
+  color: #cbd3ca;
+}
+
+.admin-rating-top small {
+  color: #7b8a81;
+  font-size: 10px;
+}
+
+.admin-rating-score {
+  margin-top: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #52635a;
+}
+
+.admin-rating-item p {
+  margin: 10px 0 0;
+  color: #34443b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.admin-rating-item em {
+  color: #8a968f;
+}
+
+.admin-rating-loading {
+  padding: 20px;
+  text-align: center;
+  color: #718078;
+  font-size: 12px;
+}
+
+@media(max-width:650px) {
+  .admin-ratings-section {
+    padding: 16px;
+  }
+
+  .admin-rating-head {
+    align-items: flex-start;
+  }
+
+  .admin-rating-average {
+    min-width: 75px;
+    padding: 12px;
+  }
+
+  .admin-rating-average strong {
+    font-size: 26px;
+  }
+
+  .admin-rating-stars {
+    font-size: 17px;
+  }
+}
