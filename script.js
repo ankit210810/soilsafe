@@ -75,6 +75,201 @@ nav?.querySelectorAll("a").forEach(link => {
     menuBtn?.setAttribute("aria-expanded", "false");
   });
 });
+    /* website ratings */
+const starRating = document.getElementById("starRating");
+const ratingLabel = document.getElementById("ratingLabel");
+const ratingFeedback = document.getElementById("ratingFeedback");
+const submitRating = document.getElementById("submitRating");
+const ratingMessage = document.getElementById("ratingMessage");
+const ratingAverage = document.getElementById("ratingAverage");
+const ratingTotal = document.getElementById("ratingTotal");
+const ratingStarsDisplay = document.getElementById("ratingStarsDisplay");
+
+let selectedRating = 0;
+
+const ratingLabels = {
+  1: "Very poor",
+  2: "Needs improvement",
+  3: "Good",
+  4: "Very good",
+  5: "Excellent"
+};
+
+function updateRatingStars() {
+  if (!starRating) return;
+
+  starRating.querySelectorAll("button").forEach(button => {
+    const value = Number(button.dataset.rating);
+
+    button.classList.toggle(
+      "selected",
+      value <= selectedRating
+    );
+  });
+
+  if (ratingLabel) {
+    ratingLabel.textContent =
+      selectedRating
+        ? ratingLabels[selectedRating]
+        : "Select a rating";
+  }
+}
+
+starRating?.querySelectorAll("button").forEach(button => {
+  button.addEventListener("click", () => {
+    selectedRating = Number(button.dataset.rating);
+    updateRatingStars();
+  });
+});
+
+async function loadRatingSummary() {
+  if (!supabase) return;
+
+  const { data, error } = await supabase
+    .from("website_ratings")
+    .select("rating");
+
+  if (error) {
+    console.error("Could not load ratings:", error);
+    return;
+  }
+
+  const ratings = data || [];
+  const total = ratings.length;
+
+  const average =
+    total > 0
+      ? ratings.reduce((sum, item) => sum + item.rating, 0) / total
+      : 0;
+
+  if (ratingAverage) {
+    ratingAverage.textContent = average.toFixed(1);
+  }
+
+  if (ratingTotal) {
+    ratingTotal.textContent = total;
+  }
+
+  if (ratingStarsDisplay) {
+    const rounded = Math.round(average);
+
+    ratingStarsDisplay.textContent =
+      "★".repeat(rounded) +
+      "☆".repeat(5 - rounded);
+  }
+}
+
+async function loadMyRating() {
+  if (!supabase) return;
+
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from("website_ratings")
+    .select("rating, feedback")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Could not load your rating:", error);
+    return;
+  }
+
+  if (!data) return;
+
+  selectedRating = data.rating;
+
+  if (ratingFeedback) {
+    ratingFeedback.value = data.feedback || "";
+  }
+
+  updateRatingStars();
+
+  if (submitRating) {
+    submitRating.innerHTML = 'Update rating <span>→</span>';
+  }
+}
+
+submitRating?.addEventListener("click", async () => {
+  ratingMessage.textContent = "";
+  ratingMessage.className = "form-message";
+
+  if (!supabase) {
+    ratingMessage.textContent = "SoilSafe connection is not available.";
+    return;
+  }
+
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    ratingMessage.textContent =
+      "Please login before submitting a rating.";
+    ratingMessage.classList.add("error");
+    return;
+  }
+
+  if (!selectedRating) {
+    ratingMessage.textContent =
+      "Please select a star rating first.";
+    ratingMessage.classList.add("error");
+    return;
+  }
+
+  submitRating.disabled = true;
+  submitRating.innerHTML = "Saving...";
+
+  const feedback =
+    ratingFeedback?.value.trim() || null;
+
+  const { error } = await supabase
+    .from("website_ratings")
+    .upsert(
+      {
+        user_id: user.id,
+        rating: selectedRating,
+        feedback: feedback,
+        updated_at: new Date().toISOString()
+      },
+      {
+        onConflict: "user_id"
+      }
+    );
+
+  submitRating.disabled = false;
+
+  if (error) {
+    console.error("Rating error:", error);
+
+    ratingMessage.textContent =
+      "Could not save your rating. Please try again.";
+
+    ratingMessage.classList.add("error");
+
+    submitRating.innerHTML =
+      "Submit rating <span>→</span>";
+
+    return;
+  }
+
+  ratingMessage.textContent =
+    "Thank you! Your rating has been saved.";
+
+  ratingMessage.classList.add("success");
+
+  submitRating.innerHTML =
+    "Update rating <span>→</span>";
+
+  await loadRatingSummary();
+});
+
+loadRatingSummary();
+loadMyRating();
 /* notifications */
 function renderNotifications(){const list=document.getElementById("notificationList");if(!list)return;if(!user){list.innerHTML='<div class="notification-empty">Login to receive report updates here.</div>';return}if(!notifications.length){list.innerHTML='<div class="notification-empty">No notifications yet. Your report updates will appear here.</div>';return}list.innerHTML=notifications.map(n=>`<button type="button" class="notification-item ${n.read_at?"read":"unread"}" data-notification="${esc(n.id)}"><span class="notification-dot"></span><span><b>${esc(n.title)}</b><small>${esc(n.message)}</small><em>${new Date(n.created_at).toLocaleString()}</em></span></button>`).join("");document.querySelectorAll("[data-notification]").forEach(btn=>btn.addEventListener("click",()=>markNotificationRead(btn.dataset.notification)));updateAuthUI();}
 async function markNotificationRead(id){if(!supabase||!user)return;await supabase.from("notifications").update({read_at:new Date().toISOString()}).eq("id",id).eq("user_id",user.id);const n=notifications.find(x=>x.id===id);if(n)n.read_at=new Date().toISOString();renderNotifications();}
