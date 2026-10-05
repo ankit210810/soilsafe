@@ -414,7 +414,7 @@ async function updateAdminReport(id){
       data: emailResult,
       error: emailError
     } = await supabase.functions.invoke(
-      ""smooth-api"",
+      "smooth-api",
       {
         body: {
           report_id: id
