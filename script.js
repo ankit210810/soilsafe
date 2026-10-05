@@ -573,6 +573,7 @@ document
 window.openReportEditor = openReportEditor;
 window.closeReportEditor = closeReportEditor;
 window.saveReportUpdate = saveReportUpdate;
+window.deleteAdminReport = deleteAdminReport;
 /* mobile navigation */
 const menuBtn = document.getElementById("menuBtn");
 const nav = document.getElementById("nav");
@@ -1064,6 +1065,7 @@ function renderAdmin(){if(!isAdmin)return;const counts={new:0,review:0,responded
   type="button"
   class="admin-delete-btn"
   data-delete="${esc(r.id)}"
+  onclick="deleteAdminReport('${esc(r.id)}')"
 >
   Delete completed report
 </button></div><div class="admin-result" id="admin-result-${esc(r.id)}"></div></article>`).join(""):'<div class="empty">No online reports yet.</div>';document.querySelectorAll(".save-admin").forEach(btn=>btn.addEventListener("click",()=>updateAdminReport(btn.dataset.save)));  const adminReports = document.getElementById("adminReports");  if (adminReports && !document.getElementById("adminRatings")) {   adminReports.insertAdjacentHTML("beforeend", `     <section class="admin-ratings-section" id="adminRatings">       <div class="admin-rating-loading">         Loading user ratings and feedback…       </div>     </section>   `); }  loadAdminRatings(); }
