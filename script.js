@@ -779,12 +779,187 @@ submitRating?.addEventListener("click", async () => {
 loadRatingSummary();
 loadMyRating();
 /* notifications */
-function renderNotifications(){const list=document.getElementById("notificationList");if(!list)return;if(!user){list.innerHTML='<div class="notification-empty">Login to receive report updates here.</div>';return}if(!notifications.length){list.innerHTML='<div class="notification-empty">No notifications yet. Your report updates will appear here.</div>';return}list.innerHTML=notifications.map(n=>`<button type="button" class="notification-item ${n.read_at?"read":"unread"}" data-notification="${esc(n.id)}"><span class="notification-dot"></span><span><b>${esc(n.title)}</b><small>${esc(n.message)}</small><em>${new Date(n.created_at).toLocaleString()}</em></span></button>`).join("");document.querySelectorAll("[data-notification]").forEach(btn=>btn.addEventListener("click",()=>markNotificationRead(btn.dataset.notification)));updateAuthUI();}
-async function markNotificationRead(id){if(!supabase||!user)return;await supabase.from("notifications").update({read_at:new Date().toISOString()}).eq("id",id).eq("user_id",user.id);const n=notifications.find(x=>x.id===id);if(n)n.read_at=new Date().toISOString();renderNotifications();}
-async function markAllNotificationsRead(){if(!supabase||!user)return;await supabase.from("notifications").update({read_at:new Date().toISOString()}).eq("user_id",user.id).is("read_at",null);notifications.forEach(n=>{if(!n.read_at)n.read_at=new Date().toISOString()});renderNotifications();}
-function toggleNotifications(){const pop=document.getElementById("notificationPopover");if(!pop)return;pop.classList.toggle("open");if(pop.classList.contains("open"))loadNotifications();}
-document.getElementById("notificationBtn")?.addEventListener("click",toggleNotifications);document.getElementById("mobileNotifyBtn")?.addEventListener("click",toggleNotifications);document.getElementById("markNotificationsRead")?.addEventListener("click",markAllNotificationsRead);document.addEventListener("click",e=>{const pop=document.getElementById("notificationPopover");if(pop?.classList.contains("open")&&!pop.contains(e.target)&&!e.target.closest("#notificationBtn")&&!e.target.closest("#mobileNotifyBtn"))pop.classList.remove("open");});
+function renderNotifications(){
+  const list = document.getElementById("notificationList");
+  if(!list) return;
 
+  if(!user){
+    list.innerHTML =
+      '<div class="notification-empty">Login to receive report updates here.</div>';
+    return;
+  }
+
+  if(!notifications.length){
+    list.innerHTML =
+      '<div class="notification-empty">No notifications yet. Your report updates will appear here.</div>';
+    return;
+  }
+
+  list.innerHTML = notifications.map(n => `
+    <button
+      type="button"
+      class="notification-item ${n.read_at ? "read" : "unread"}"
+      data-notification="${esc(n.id)}"
+      data-report-id="${esc(n.report_id || "")}"
+    >
+      <span class="notification-dot"></span>
+
+      <span>
+        <b>${esc(n.title)}</b>
+        <small>${esc(n.message)}</small>
+        <em>${new Date(n.created_at).toLocaleString()}</em>
+      </span>
+    </button>
+  `).join("");
+
+  document.querySelectorAll("[data-notification]").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+      const notificationId = btn.dataset.notification;
+      const reportId = btn.dataset.reportId;
+
+      if(reportId && typeof openAdminNotification === "function"){
+        openAdminNotification(notificationId, reportId);
+      }else{
+        markNotificationRead(notificationId);
+      }
+
+    });
+
+  });
+
+  updateAuthUI();
+}
+
+
+async function openAdminNotification(notificationId, reportId){
+
+  await markNotificationRead(notificationId);
+
+  /*
+    Only admins should jump to the admin report.
+    Normal user notifications simply become read.
+  */
+  if(!reportId) return;
+
+  const isAdmin =
+    typeof currentProfile !== "undefined" &&
+    currentProfile?.role === "admin";
+
+  if(!isAdmin) return;
+
+  if(typeof renderAdmin === "function"){
+    renderAdmin();
+  }
+
+  setTimeout(() => {
+
+    const reportElement =
+      document.querySelector(
+        `[data-report-id="${CSS.escape(reportId)}"]`
+      );
+
+    if(reportElement){
+
+      reportElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+      reportElement.classList.add("notification-highlight");
+
+      setTimeout(() => {
+        reportElement.classList.remove("notification-highlight");
+      }, 2500);
+
+    }
+
+  }, 300);
+}
+
+
+async function markNotificationRead(id){
+  if(!supabase || !user) return;
+
+  await supabase
+    .from("notifications")
+    .update({
+      read_at: new Date().toISOString()
+    })
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  const n = notifications.find(x => x.id === id);
+
+  if(n){
+    n.read_at = new Date().toISOString();
+  }
+
+  renderNotifications();
+}
+
+
+async function markAllNotificationsRead(){
+  if(!supabase || !user) return;
+
+  await supabase
+    .from("notifications")
+    .update({
+      read_at: new Date().toISOString()
+    })
+    .eq("user_id", user.id)
+    .is("read_at", null);
+
+  notifications.forEach(n => {
+    if(!n.read_at){
+      n.read_at = new Date().toISOString();
+    }
+  });
+
+  renderNotifications();
+}
+
+
+function toggleNotifications(){
+  const pop = document.getElementById("notificationPopover");
+  if(!pop) return;
+
+  pop.classList.toggle("open");
+
+  if(pop.classList.contains("open")){
+    loadNotifications();
+  }
+}
+
+
+document
+  .getElementById("notificationBtn")
+  ?.addEventListener("click", toggleNotifications);
+
+document
+  .getElementById("mobileNotifyBtn")
+  ?.addEventListener("click", toggleNotifications);
+
+document
+  .getElementById("markNotificationsRead")
+  ?.addEventListener("click", markAllNotificationsRead);
+
+
+document.addEventListener("click", e => {
+
+  const pop = document.getElementById("notificationPopover");
+
+  if(
+    pop?.classList.contains("open") &&
+    !pop.contains(e.target) &&
+    !e.target.closest("#notificationBtn") &&
+    !e.target.closest("#mobileNotifyBtn")
+  ){
+    pop.classList.remove("open");
+  }
+
+});
   async function loadAdminRatings() {
   const box = document.getElementById("adminRatings");
   if (!box || !isAdmin || !supabase) return;
