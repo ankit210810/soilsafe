@@ -1207,14 +1207,58 @@ document.getElementById("loginSubmit")?.addEventListener("click",async()=>{
 });
 
 document.getElementById("signupSubmit")?.addEventListener("click",async()=>{
-  const email=document.getElementById("loginEmail").value.trim(),password=document.getElementById("loginPassword").value,msg=document.getElementById("loginMessage");
-  if(!supabase){msg.textContent="Real account creation is not connected yet. Add your Supabase Project URL and public/publishable key first.";return;}
-  if(!email||password.length<6){msg.textContent="Enter an email and a password with at least 6 characters.";return;}
+  const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPassword").value;
+  const msg=document.getElementById("loginMessage");
+
+  if(!supabase){
+    msg.textContent="Real account creation is not connected yet. Add your Supabase Project URL and public/publishable key first.";
+    return;
+  }
+
+  if(!email||password.length<6){
+    msg.textContent="Enter an email and a password with at least 6 characters.";
+    return;
+  }
+
   msg.textContent="Creating account…";
-  const {data,error}=await supabase.auth.signUp({email,password});
-  if(error){msg.textContent=error.message;return;}
-  if(data.user){const {error:profileError}=await supabase.from("profiles").upsert({id:data.user.id,full_name:email.split("@")[0],role:"student"});if(profileError)console.warn("Profile creation:",profileError.message);}
-  msg.textContent="Account created. Check your email if confirmation is enabled, then login.";
+
+  const displayName=email.split("@")[0];
+
+  const {data,error}=await supabase.auth.signUp({
+    email,
+    password,
+    options:{
+      data:{
+        full_name:displayName
+      }
+    }
+  });
+
+  if(error){
+    msg.textContent=error.message;
+    return;
+  }
+
+  if(data.user){
+    const {error:profileError}=await supabase
+      .from("profiles")
+      .upsert({
+        id:data.user.id,
+        full_name:displayName,
+        role:"student"
+      });
+
+    if(profileError){
+      console.warn(
+        "Profile creation:",
+        profileError.message
+      );
+    }
+  }
+
+  msg.textContent=
+    "Account created. Check your email if confirmation is enabled, then login.";
 });
 
 document.getElementById("logoutBtn")?.addEventListener("click",async()=>{if(supabase)await supabase.auth.signOut();user=null;isAdmin=false;records=[];notifications=[];updateAuthUI();renderNotifications();renderAll();});
