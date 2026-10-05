@@ -1059,7 +1059,14 @@ document.addEventListener("click", e => {
 }
 
 /* admin */
-function renderAdmin(){if(!isAdmin)return;const counts={new:0,review:0,responded:0,confirmed:0};records.forEach(r=>counts[r.status]=(counts[r.status]||0)+1);document.getElementById("adminStats").innerHTML=[['NEW',counts.new],['UNDER REVIEW',counts.review],['RESPONSE SUGGESTED',counts.responded],['RESOLVED',counts.confirmed]].map(x=>`<div class="impact-card"><strong>${x[1]}</strong><span>${x[0]}</span></div>`).join("");document.getElementById("adminReports").innerHTML=records.length?records.map(r=>`<article class="admin-report" data-report-id="${esc(r.id)}"><div class="admin-report-head"><div><span class="badge">${esc(r.statusLabel)}</span><div class="admin-problem-number">${esc(r.problemNumber)}</div><h3>${esc(r.category)}</h3><small>${esc(r.location)} · ${esc(r.date)} · ${r.reporterType==="lpu_student"?"LPU student":"Another place"} · ${esc(r.reporter)}</small></div>${r.photo?`<a href="${esc(r.photo)}" target="_blank" rel="noreferrer">View photo ↗</a>`:""}</div><p>${esc(r.description)}</p><div class="admin-edit"><label>Status<select data-status="${esc(r.id)}"><option value="new" ${r.status==='new'?'selected':''}>New</option><option value="review" ${r.status==='review'?'selected':''}>Under review</option><option value="responded" ${r.status==='responded'?'selected':''}>Response suggested</option><option value="confirmed" ${r.status==='confirmed'?'selected':''}>Resolved</option></select></label><label>Message to reporter<textarea data-message="${esc(r.id)}" rows="3" placeholder="Write the message the reporter should receive">${esc(r.adminMessage)}</textarea></label><label>Suggested solution<textarea data-solution="${esc(r.id)}" rows="3">${esc(r.solution)}</textarea></label><button class="lime-btn save-admin" data-save="${esc(r.id)}">Save update & notify user →</button></div><div class="admin-result" id="admin-result-${esc(r.id)}"></div></article>`).join(""):'<div class="empty">No online reports yet.</div>';document.querySelectorAll(".save-admin").forEach(btn=>btn.addEventListener("click",()=>updateAdminReport(btn.dataset.save)));  const adminReports = document.getElementById("adminReports");  if (adminReports && !document.getElementById("adminRatings")) {   adminReports.insertAdjacentHTML("beforeend", `     <section class="admin-ratings-section" id="adminRatings">       <div class="admin-rating-loading">         Loading user ratings and feedback…       </div>     </section>   `); }  loadAdminRatings(); }
+function renderAdmin(){if(!isAdmin)return;const counts={new:0,review:0,responded:0,confirmed:0};records.forEach(r=>counts[r.status]=(counts[r.status]||0)+1);document.getElementById("adminStats").innerHTML=[['NEW',counts.new],['UNDER REVIEW',counts.review],['RESPONSE SUGGESTED',counts.responded],['RESOLVED',counts.confirmed]].map(x=>`<div class="impact-card"><strong>${x[1]}</strong><span>${x[0]}</span></div>`).join("");document.getElementById("adminReports").innerHTML=records.length?records.map(r=>`<article class="admin-report" data-report-id="${esc(r.id)}"><div class="admin-report-head"><div><span class="badge">${esc(r.statusLabel)}</span><div class="admin-problem-number">${esc(r.problemNumber)}</div><h3>${esc(r.category)}</h3><small>${esc(r.location)} · ${esc(r.date)} · ${r.reporterType==="lpu_student"?"LPU student":"Another place"} · ${esc(r.reporter)}</small></div>${r.photo?`<a href="${esc(r.photo)}" target="_blank" rel="noreferrer">View photo ↗</a>`:""}</div><p>${esc(r.description)}</p><div class="admin-edit"><label>Status<select data-status="${esc(r.id)}"><option value="new" ${r.status==='new'?'selected':''}>New</option><option value="review" ${r.status==='review'?'selected':''}>Under review</option><option value="responded" ${r.status==='responded'?'selected':''}>Response suggested</option><option value="confirmed" ${r.status==='confirmed'?'selected':''}>Resolved</option></select></label><label>Message to reporter<textarea data-message="${esc(r.id)}" rows="3" placeholder="Write the message the reporter should receive">${esc(r.adminMessage)}</textarea></label><label>Suggested solution<textarea data-solution="${esc(r.id)}" rows="3">${esc(r.solution)}</textarea></label><button class="lime-btn save-admin" data-save="${esc(r.id)}">Save update & notify user →</button>
+<button
+  type="button"
+  class="admin-delete-btn"
+  data-delete="${esc(r.id)}"
+>
+  Delete completed report
+</button></div><div class="admin-result" id="admin-result-${esc(r.id)}"></div></article>`).join(""):'<div class="empty">No online reports yet.</div>';document.querySelectorAll(".save-admin").forEach(btn=>btn.addEventListener("click",()=>updateAdminReport(btn.dataset.save)));  const adminReports = document.getElementById("adminReports");  if (adminReports && !document.getElementById("adminRatings")) {   adminReports.insertAdjacentHTML("beforeend", `     <section class="admin-ratings-section" id="adminRatings">       <div class="admin-rating-loading">         Loading user ratings and feedback…       </div>     </section>   `); }  loadAdminRatings(); }
 async function updateAdminReport(id){
   const btn = document.querySelector(
     `[data-save="${CSS.escape(id)}"]`
@@ -1163,6 +1170,49 @@ async function updateAdminReport(id){
 
   }
 }
+
+async function deleteAdminReport(id){
+
+  if(!isAdmin){
+    return;
+  }
+
+  const report = records.find(r => r.id === id);
+
+  if(!report){
+    alert("Report not found.");
+    return;
+  }
+
+  if(report.status !== "confirmed"){
+    alert("Only resolved/completed reports can be deleted.");
+    return;
+  }
+
+  const confirmed = confirm(
+    `Delete ${report.problemNumber} permanently?\n\nThis cannot be undone.`
+  );
+
+  if(!confirmed){
+    return;
+  }
+
+  const { error } = await supabase
+    .from("reports")
+    .delete()
+    .eq("id", id);
+
+  if(error){
+    console.error("Delete report error:", error);
+    alert("Could not delete the report: " + error.message);
+    return;
+  }
+
+  records = records.filter(r => r.id !== id);
+
+  await loadReports();
+  renderAll();
+}
 document.getElementById("refreshAdmin").addEventListener("click",async()=>{await loadReports();renderAll();});
 
 /* export */
@@ -1177,7 +1227,11 @@ function openProfile(){if(!user){openLogin();return;}renderProfile();profileModa
 function closeProfile(){profileModal?.classList.remove("open");}
 function renderProfile(){if(!user)return;const p=profile||{};const name=p.full_name||user.email?.split("@")[0]||"SoilSafe user";const a=document.getElementById("profileAvatar");if(a)a.textContent=name.charAt(0).toUpperCase();document.getElementById("profileHeading")&&(document.getElementById("profileHeading").textContent=isAdmin?"Admin profile":"My profile");document.getElementById("profileEmail")&&(document.getElementById("profileEmail").textContent=user.email||"");document.getElementById("profileName")&&(document.getElementById("profileName").value=p.full_name||"");document.getElementById("profileCity")&&(document.getElementById("profileCity").value=p.city||"");document.getElementById("profileBio")&&(document.getElementById("profileBio").value=p.bio||"");document.getElementById("profileAffiliation")&&(document.getElementById("profileAffiliation").value=p.affiliation_type||"other_place");const mine=records.filter(r=>r.user_id===user.id);const stats=document.getElementById("profileStats");if(stats)stats.innerHTML=`<div class="profile-stat"><b>${mine.length}</b><span>My reports</span></div><div class="profile-stat"><b>${mine.filter(r=>r.status==='confirmed').length}</b><span>Resolved</span></div><div class="profile-stat"><b>${p.created_at?new Date(p.created_at).toLocaleDateString():"—"}</b><span>Member since</span></div>`;}
 async function saveProfile(){if(!supabase||!user)return;const msg=document.getElementById("profileMessage"),name=document.getElementById("profileName").value.trim();if(!name){msg.textContent="Please enter your full name.";return;}msg.textContent="Saving profile…";const payload={id:user.id,full_name:name,bio:document.getElementById("profileBio").value.trim(),city:document.getElementById("profileCity").value.trim(),affiliation_type:document.getElementById("profileAffiliation").value,updated_at:new Date().toISOString()};const {data,error}=await supabase.from("profiles").upsert(payload).select().single();if(error){msg.textContent="Could not save profile: "+error.message;return;}profile={...(profile||{}),...data};msg.textContent="Profile saved online.";updateAuthUI();setTimeout(()=>msg.textContent="",1800);}
-document.getElementById("saveProfile")?.addEventListener("click",saveProfile);document.getElementById("closeProfile")?.addEventListener("click",closeProfile);document.querySelectorAll("[data-profile-close]").forEach(x=>x.addEventListener("click",closeProfile));
+document.getElementById("saveProfile")?.addEventListener("click",saveProfile);document.getElementById("closeProfile")?.addEventListener("click",closeProfile);document.querySelectorAll("[data-profile-close]").forEach(x=>x.addEventListener("click",closeProfile));document.querySelectorAll(".admin-delete-btn").forEach(btn =>
+  btn.addEventListener("click", () =>
+    deleteAdminReport(btn.dataset.delete)
+  )
+);
 
 /* auth */
 const modal=document.getElementById("loginModal");
